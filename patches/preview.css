@@ -1,0 +1,27 @@
+/* === Entry preview and thumbnail styles (appended by miniflux-with-descriptions) === */
+
+.item-meta-preview {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-top: 0.4em;
+    margin-bottom: 0.2em;
+    font-size: 0.85em;
+    color: var(--item-meta-focus-color);
+    line-height: 1.4;
+}
+
+.item-meta-preview p {
+    margin: 0;
+}
+
+.item-meta-thumbnail {
+    float: right;
+    box-shadow: 0 0.1em 0.25em 0 rgba(0, 0, 0, 0.2), 0 0.1em 0.25em 0 rgba(0, 0, 0, 0.2);
+    border-radius: 0.4em;
+    margin: 0 0 0.4em 0.5em;
+    max-width: 120px;
+    max-height: 6em;
+    object-fit: cover;
+}
