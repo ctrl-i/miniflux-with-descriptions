@@ -1,10 +1,10 @@
-FROM docker.io/library/golang:alpine3.23 AS build
+FROM --platform=$BUILDPLATFORM docker.io/library/golang:alpine3.23 AS build
 RUN apk add --no-cache build-base git make
 ADD . /go/src/app
 WORKDIR /go/src/app
-RUN CGO_ENABLED=0 make miniflux
+RUN make linux-arm64
 
-FROM docker.io/library/alpine:3.23
+FROM --platform=linux/arm64 docker.io/library/alpine:3.23
 
 LABEL org.opencontainers.image.title=Miniflux
 LABEL org.opencontainers.image.description="Miniflux is a minimalist and opinionated feed reader"
@@ -17,6 +17,6 @@ LABEL org.opencontainers.image.documentation=https://miniflux.app/docs/
 EXPOSE 8080
 ENV LISTEN_ADDR=0.0.0.0:8080
 RUN apk --no-cache add ca-certificates tzdata
-COPY --from=build /go/src/app/miniflux /usr/bin/miniflux
+COPY --from=build /go/src/app/miniflux-linux-arm64 /usr/bin/miniflux
 USER 65534
 CMD ["/usr/bin/miniflux"]
