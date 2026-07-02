@@ -208,6 +208,14 @@ func (e *EntryQueryBuilder) WithLimit(limit int) *EntryQueryBuilder {
 	return e
 }
 
+// WithLimitAndMaximum sets the limit, capped at the given maximum.
+func (e *EntryQueryBuilder) WithLimitAndMaximum(limit, maximum int) *EntryQueryBuilder {
+	if limit > 0 {
+		e.limit = min(limit, maximum)
+	}
+	return e
+}
+
 // WithOffset set the offset.
 func (e *EntryQueryBuilder) WithOffset(offset int) *EntryQueryBuilder {
 	if offset > 0 {
@@ -473,6 +481,23 @@ func (e *EntryQueryBuilder) GetEntryIDs() ([]int64, error) {
 	}
 
 	return entryIDs, nil
+}
+
+// GetEntryIDsWithCount returns a list of entry IDs and the total count of
+// matching rows (ignoring limit/offset). It uses two queries: one to count
+// all matching rows and one to fetch the paginated IDs.
+func (e *EntryQueryBuilder) GetEntryIDsWithCount() ([]int64, int, error) {
+	total, err := e.CountEntries()
+	if err != nil {
+		return nil, 0, err
+	}
+
+	entryIDs, err := e.GetEntryIDs()
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return entryIDs, total, nil
 }
 
 func (e *EntryQueryBuilder) contentColumn() string {
